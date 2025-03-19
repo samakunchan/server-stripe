@@ -1,0 +1,15 @@
+services:
+  api:
+    container_name: server-stripe
+    build:
+      context: .
+      target: cache
+    volumes:
+      - ./:/stripe-container
+      - /stripe-container/node_modules
+    command: yarn start
+    environment:
+      # hot reload enabled
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "5002:5001"
