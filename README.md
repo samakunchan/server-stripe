@@ -15,10 +15,18 @@ Puis remplir les valeurs de `.env` avec les clés A.P.I.
 yarn install
 ```
 
-## Lancer le server
+## Lancer le server (local)
 
 ```shell
 yarn start
 ```
 
 Le serveur sera actif avec cet url : `http://localhost:5001`
+
+## Lancer le server (docker)
+
+```shell
+docker compose up -d
+```
+
+Le serveur sera actif avec cet url : `http://localhost:5002`
