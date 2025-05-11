@@ -6,7 +6,7 @@ const cors = require('cors');
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 /**
@@ -15,7 +15,7 @@ app.use(express.json());
  * Réponse : 'Le serveur est actif'
  */
 app.get('/', async (req, res) => {
-  res.json({message : 'Le serveur est actif'});
+  res.json({message : 'Le serveur perso stripe est actif'});
 });
 
 /**
@@ -51,6 +51,22 @@ app.get('/products', async (req, res) => {
     });
 
     res.json(productsWithPrices);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/create-payment-intent", async (req, res) => {
+  const { amount, currency } = req.body;
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: currency,
+      payment_method_types: ["card"],
+    });
+
+    res.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -299,6 +315,6 @@ app.post('/restore-subscription', async (req, res) => {
 
 // Lancer le serveur
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0',() => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
