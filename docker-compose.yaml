@@ -12,4 +12,4 @@ services:
       # hot reload enabled
       - CHOKIDAR_USEPOLLING=true
     ports:
-      - "5002:5001"
+      - "5003:5001"
