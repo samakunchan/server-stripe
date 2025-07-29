@@ -34,19 +34,18 @@ app.get('/', async (req, res) => {
  */
 app.get('/products', async (req, res) => {
   try {
-    const products = await stripe.products.list();
+    const products = await stripe.products.list({ expand: ['data.default_price'] }); // [SAMA]
     const prices = await stripe.prices.list();
 
     // Associer les prix aux produits
-    const productsWithPrices = products.data.map(product => {
-      const price = prices.data.find(p => p.product === product.id);
+    const productsWithPrices = products.data.filter(product => product.active).map(product => { // [SAMA]
       return {
         id: product.id,
         name: product.name,
         description: product.description,
-        priceId: price ? price.id : null,
-        price: price ? (price.unit_amount / 100) : null,
-        currency: price ? price.currency : null,
+        priceId: product.default_price.id,
+        price: (product.default_price.unit_amount / 100),
+        currency: product.default_price.currency,
       };
     });
 
@@ -83,7 +82,7 @@ app.post('/create-payment-intent', async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: currency,
-      payment_method_types: ["card"],
+      payment_method_types: ['card'],
     });
 
     res.json({ clientSecret: paymentIntent.client_secret });
@@ -123,7 +122,7 @@ app.post('/create-subscription', async (req, res) => {
       return res.status(400).json({ error: "priceId et email sont requis" });
     }
 
-    // Vérifier si le client existe déjà
+    // Vérifie si le client existe déjà
     const customers = await stripe.customers.list({ email });
     let customer = customers.data.length > 0 ? customers.data[0] : null;
 
@@ -131,7 +130,7 @@ app.post('/create-subscription', async (req, res) => {
       customer = await stripe.customers.create({ email: email });
     }
 
-    // Vérifier si l'utilisateur a déjà un abonnement actif ou en période d'essai
+    // Vérifie si l'utilisateur a déjà un abonnement actif ou en période d'essai
     const subscriptions = await stripe.subscriptions.list({
       customer: customer.id,
       status: 'all', // On récupère tous les abonnements
@@ -154,7 +153,6 @@ app.post('/create-subscription', async (req, res) => {
       payment_behavior: 'default_incomplete',
       expand: ['latest_invoice.payment_intent'],
     });
-
     res.json({
       subscriptionId: subscription.id,
       clientSecret: subscription.latest_invoice?.payment_intent?.client_secret || null,
@@ -331,6 +329,7 @@ app.post('/restore-subscription', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 // Lancer le serveur
