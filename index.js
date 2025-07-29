@@ -56,7 +56,27 @@ app.get('/products', async (req, res) => {
   }
 });
 
-app.post("/create-payment-intent", async (req, res) => {
+/**
+ * Method GET
+ * @example
+ * Réponse : 'Le serveur est actif'
+ */
+app.get('/subscriptions', async (req, res) => {
+  try {
+    const subscriptions = await stripe.subscriptions.list({
+      status: 'active',
+      limit: 10
+    });
+    subscriptions.data.forEach(sub => {
+      console.log(`ID: ${sub.id}, Customer: ${sub.customer}, Status: ${sub.status}`);
+    });
+    res.json({subscriptions: subscriptions.data});
+  } catch (e) {
+    res.status(400).json({message: 'Impossible de lister les abonnements.', error: e});
+  }
+});
+
+app.post('/create-payment-intent', async (req, res) => {
   const { amount, currency } = req.body;
 
   try {
