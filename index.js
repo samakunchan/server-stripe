@@ -238,14 +238,14 @@ app.post('/create-subscription', async (req, res) => {
  * @example Pour annuler l'abonnement à date
  * Input
  * {
- *   "email": "samakunchan@gmail.com",
+ *   "email": "my_email@gmail.com",
  * }
  * ou
  *
  * @example Pour annuler l'abonnement immédiatement
  * Input
  * {
- *   "email": "samakunchan@gmail.com",
+ *   "email": "my_email@gmail.com",
  *   "cancelImmediately": true
  * }
  *
@@ -331,7 +331,7 @@ app.post('/cancel-subscription', async (req, res) => {
  * @example Pour annuler l'abonnement à date
  * Input
  * {
- *   "email": "samakunchan@gmail.com",
+ *   "email": "my_email@gmail.com",
  * }
  *
  * @example 200
