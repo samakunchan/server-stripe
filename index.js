@@ -58,7 +58,71 @@ app.get('/products', async (req, res) => {
 /**
  * Method GET
  * @example
- * Réponse : 'Le serveur est actif'
+ * ```json
+ * {
+ *     "subscriptions": [
+ *         {
+ *             "id": "sub_1RqEtGE3LhDQnn9Rn7ipcY7D",
+ *             "object": "subscription",
+ *             "application": null,
+ *             "application_fee_percent": null,
+ *             "automatic_tax": {...},
+ *             "billing_cycle_anchor": 1753800750,
+ *             "billing_cycle_anchor_config": null,
+ *             "billing_mode": {...},
+ *             "billing_thresholds": null,
+ *             "cancel_at": null,
+ *             "cancel_at_period_end": false,
+ *             "canceled_at": null,
+ *             "cancellation_details": {...},
+ *             "collection_method": "charge_automatically",
+ *             "created": 1753800750,
+ *             "currency": "eur",
+ *             "current_period_end": 1756479150,
+ *             "current_period_start": 1753800750,
+ *             "customer": "cus_SjDIGHi7gYTpCz",
+ *             "days_until_due": null,
+ *             "default_payment_method": null,
+ *             "default_source": null,
+ *             "default_tax_rates": [],
+ *             "description": null,
+ *             "discount": null,
+ *             "discounts": [],
+ *             "ended_at": null,
+ *             "invoice_settings": {...},
+ *             "items": {...},
+ *             "latest_invoice": "in_1RqEtGE3LhDQnn9R1J0eUftB",
+ *             "livemode": false,
+ *             "metadata": {},
+ *             "next_pending_invoice_item_invoice": null,
+ *             "on_behalf_of": null,
+ *             "pause_collection": null,
+ *             "payment_settings": {...},
+ *             "pending_invoice_item_interval": null,
+ *             "pending_setup_intent": null,
+ *             "pending_update": null,
+ *             "plan": {
+ *                 "id": "price_1RlsZME3LhDQnn9RPhijUQZm",
+ *                 ...
+ *              },
+ *             "quantity": 1,
+ *             "schedule": null,
+ *             "start_date": 1753800750,
+ *             "status": "active",
+ *             "test_clock": null,
+ *             "transfer_data": null,
+ *             "trial_end": null,
+ *             "trial_settings": {
+ *                 "end_behavior": {
+ *                     "missing_payment_method": "create_invoice"
+ *                 }
+ *             },
+ *             "trial_start": null
+ *         },
+ *         ...
+ *     ]
+ * }
+ * ```
  */
 app.get('/subscriptions', async (req, res) => {
   try {
@@ -75,6 +139,11 @@ app.get('/subscriptions', async (req, res) => {
   }
 });
 
+/**
+ * Sert à afficher la feuille de paiment pour un paiment normal.
+ * Pas nécessaire dans un environnment mobile.
+ * A voir si c'est utile pour le web.
+ */
 app.post('/create-payment-intent', async (req, res) => {
   const { amount, currency } = req.body;
 
